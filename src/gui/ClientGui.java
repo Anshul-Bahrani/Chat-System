@@ -47,6 +47,8 @@ public class ClientGui extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -72,18 +74,25 @@ public class ClientGui extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel2.setToolTipText("");
         jPanel2.setPreferredSize(new java.awt.Dimension(700, 573));
         jPanel2.setRequestFocusEnabled(false);
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
+        jTextArea2.setRows(5);
+        jScrollPane4.setViewportView(jTextArea2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 701, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 573, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 573, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanel2);
@@ -240,8 +249,8 @@ public class ClientGui extends javax.swing.JFrame {
                     BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     BufferedReader userbr = new BufferedReader(new InputStreamReader(System.in));
                     PrintWriter pr = new PrintWriter(s.getOutputStream(),true);
-                    System.out.println(br.readLine());
-                    String myself = userbr.readLine();
+                    String myself = JOptionPane.showInputDialog(null , br.readLine(), "Welcome!", JOptionPane.QUESTION_MESSAGE);
+                    if( myself != null) {
                     ClientGui cg = new ClientGui();
                     cg.setVisible(true);
                     pr.println(myself);
@@ -254,10 +263,11 @@ public class ClientGui extends javax.swing.JFrame {
                     ServerInfo.myself = myself;
                     System.out.println("Herllo");
                     l.start();
-                    try {
-                        Options.check(2,cg);  //Refresing who is online
-                    } catch (IOException ex) {
-                        System.out.println(ex);
+                        try {
+                            Options.check(2,cg);  //Refresing who is online
+                        } catch (IOException ex) {
+                            System.out.println(ex);
+                        }
                     }
 	}catch(Exception e) {
 		System.out.println(e);
@@ -277,6 +287,8 @@ public class ClientGui extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
+    public javax.swing.JTextArea jTextArea2;
     public javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 public void addclients(ArrayList clientsstr) {
@@ -385,26 +397,32 @@ class ClientInfos {
         msgs.add(msg);
     }
     public void load() {
-        cg.jPanel2.removeAll();
+        String fspaces = buildString(' ', 27);
+        cg.jTextArea2.setText(fspaces + "Chat");
         cg.jPanel2.revalidate();
         cg.jPanel2.repaint();
         System.out.println(who);
         System.out.println(msgs);
+        int length = 60;
+        
         int len = who.size();
         for (int i = 0; i < len ; i++) {
-            JTextField jl = new JTextField(msgs.get(i));
-            int length = msgs.get(i).length();
-            jl.setSize(length + 100, 40);
+            String msg = msgs.get(i);
             if("me".equals(who.get(i))) {
-                jl.setLocation(700 - length - 50,i*40);
+                int msglength = msg.length();
+                String spaces = buildString(' ', length - msglength );
+                cg.jTextArea2.append("\n" + spaces + msg );
             }
             else {
-                jl.setLocation(10,i*40);
+                cg.jTextArea2.append("\n " + msg );
             }
-            cg.jPanel2.add(jl);
-            jl.setVisible(true);
         }
         cg.jPanel2.revalidate();
+    }
+    String buildString(char c, int n) {
+        char[] arr = new char[n];
+        Arrays.fill(arr, c);
+        return new String(arr);
     }
     public void typing() {
         this.jb.setBackground(Color.red);
@@ -503,7 +521,9 @@ class Options{
                 }
                 System.out.println("Typing done");
                 break;
-                        
+                
+                
+                
             }
         }
 }
