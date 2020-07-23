@@ -75,7 +75,7 @@ contain any Database-once the server shuts down - all clients are disconnected a
 - This is used to store some variables which can come handy all over the file.
 
 
-### toastr###
+### toastr ###
 
 - This is used to display a tostr indicating an incoming message from some user.
 
